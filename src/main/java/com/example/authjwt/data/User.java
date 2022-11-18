@@ -1,6 +1,7 @@
 package com.example.authjwt.data;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
@@ -14,6 +15,7 @@ import java.util.function.Predicate;
 
 @Getter
 @ToString
+@Setter
 public class User {
     @Id
     private Long id;

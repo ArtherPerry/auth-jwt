@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 @RequestMapping("/api")
 public class AuthController {
+
     @Autowired
     private UserService userService;
 
@@ -122,4 +123,15 @@ public class AuthController {
         userService.forget(forgotRequest.email,originUrl);
         return new ForgotResponse("success");
     }
+
+    record  ResetRequest(String token,String password,@JsonProperty("password_confirm")String passwordConfirm){}
+    record ResetResponse(String message){}
+
+    @PostMapping("/reset")
+    public ResetResponse reset(@RequestBody ResetRequest resetRequest){
+        userService.rest(resetRequest.token(),resetRequest.password(),resetRequest.passwordConfirm());
+        return new ResetResponse("success reset password");
+    }
+
+
 }

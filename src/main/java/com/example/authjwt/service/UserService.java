@@ -22,14 +22,16 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final String accessSecretKey;
     private final String refreshSecretKey;
+    private final  MailService mailService;
 
     public UserService(UserDao userDao, PasswordEncoder passwordEncoder,
                        @Value("${application.security.access-token-secret}") String accessSecretKey,
-                       @Value("${application.security.refresh-token-secret}") String refreshSecretKey) {
+                       @Value("${application.security.refresh-token-secret}") String refreshSecretKey,MailService mailService) {
         this.userDao = userDao;
         this.passwordEncoder = passwordEncoder;
         this.accessSecretKey = accessSecretKey;
         this.refreshSecretKey = refreshSecretKey;
+        this.mailService = mailService;
     }
 
     public User register(String firstName, String lastName, String email, String password, String confirmPassword) {
@@ -102,6 +104,21 @@ public class UserService {
         var token = UUID.randomUUID().toString().replace("-","");
         var user = userDao.findUserByEmail(email).orElseThrow(UserNotFoundError::new);
         user.addPasswordRecovery(new PasswordRecovery(token));
+        mailService.sendForgotMessage(email,token,originUrl);
         userDao.save(user);
+    }
+
+    public void rest(String token, String password, String passwordConfirm) {
+        if (!Objects.equals(password, passwordConfirm)) {
+            throw new PasswordNotMatchError();
+        }
+        var user = userDao.findPasswordRecoveryToken(token).orElseThrow(InvalidTokenError :: new);
+        user.setPassword(passwordEncoder.encode(password));
+        user.removePasswordRecoveryIf(passwordRecovery -> Objects.equals(passwordRecovery.token(),token));
+        userDao.save(user);
+
+
+
+
     }
 }

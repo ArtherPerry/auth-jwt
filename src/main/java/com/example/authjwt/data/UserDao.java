@@ -24,5 +24,5 @@ public interface UserDao extends CrudRepository<User, Long> {
     select u.* from user u inner join password_recovery pr on u.id= pr.user
     where pr.token =:token
 """)
-    Optional<PasswordRecovery> findPasswordRecoveryToken(String string);
+    Optional<User> findPasswordRecoveryToken(String string);
 }
