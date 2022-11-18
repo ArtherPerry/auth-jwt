@@ -129,7 +129,7 @@ public class AuthController {
 
     @PostMapping("/reset")
     public ResetResponse reset(@RequestBody ResetRequest resetRequest){
-        userService.rest(resetRequest.token(),resetRequest.password(),resetRequest.passwordConfirm());
+        userService.reset(resetRequest.token(),resetRequest.password(),resetRequest.passwordConfirm());
         return new ResetResponse("success reset password");
     }
 

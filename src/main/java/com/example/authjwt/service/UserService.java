@@ -108,7 +108,7 @@ public class UserService {
         userDao.save(user);
     }
 
-    public void rest(String token, String password, String passwordConfirm) {
+    public void reset(String token, String password, String passwordConfirm) {
         if (!Objects.equals(password, passwordConfirm)) {
             throw new PasswordNotMatchError();
         }
